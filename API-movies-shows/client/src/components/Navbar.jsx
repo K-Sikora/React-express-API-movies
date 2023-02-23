@@ -99,7 +99,8 @@ const Navbar = () => {
                         
                         
             <div className='hidden md:flex flex-col absolute w-full'>
-            {searchResults && isFocused && searchResults
+                            {searchResults && isFocused && searchResults
+                .filter(item => item.media_type !== 'person')
                 .slice(0,8)
                 .map((item, index) => {
                     return <Link key={index} to={`/${item.media_type}/${item.id}`}> <motion.div
@@ -130,7 +131,6 @@ const Navbar = () => {
 
                                 item.media_type == 'tv' ? <h5 className='text-sm'>TV Show{item.first_air_date && ', ' + item.first_air_date.slice(0,4)} </h5> :
                                 
-                                item.media_type == 'person' ? <h5 className='text-sm'>Person</h5> :
                                         
                                 null       
                             }
@@ -160,7 +160,8 @@ const Navbar = () => {
             </nav>
             {searchVisible && 
             <div className='flex flex-col absolute md:hidden w-full'>
-                {searchResults && isFocusedMobile && searchResults
+                    {searchResults && isFocusedMobile && searchResults
+                .filter(item => item.media_type !== 'person')
                 .slice(0,8)
                 .map((item, index) => {
                     return <Link key={index} to={`/${item.media_type}/${item.id}`}> <motion.div
@@ -191,7 +192,6 @@ const Navbar = () => {
 
                                 item.media_type == 'tv' ? <h5 className='text-sm'>TV Show{item.first_air_date && ', ' + item.first_air_date.slice(0,4)} </h5> :
                                 
-                                item.media_type == 'person' ? <h5 className='text-sm'>Person</h5> :
                                         
                                 null       
                             }

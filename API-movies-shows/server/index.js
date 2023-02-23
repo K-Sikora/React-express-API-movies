@@ -35,12 +35,7 @@ app.get('/api/movie/:id', (req, res) => {
     res.json(response.data)
     })
     .catch(err => {
-      if (err.response && err.response.status === 404) {
-        res.sendStatus(404);
-      }
-      else {
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
+      console.log(err)
   })
 })
   
@@ -53,14 +48,33 @@ app.get('/api/tv/:id', (req, res) => {
     res.json(response.data)
     })
     .catch(err => {
-      if (err.response && err.response.status === 404) {
-        res.sendStatus(404);
-      }
-      else {
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
+      console.log(err.message)
+    })
   })
+  
+  
+  app.get('/api/movie/keywords/:id', (req, res) => {
+    axios.get(`https://api.themoviedb.org/3/movie/${req.params.id}/keywords?api_key=${process.env.API_KEY}`)
+      .then(response => {
+      res.json(response.data)
+      })
+      .catch(err => {
+        console.log(err)
+      }
+      )
+})
+
+app.get('/api/tv/keywords/:id', (req, res) => {
+  axios.get(`https://api.themoviedb.org/3/tv/${req.params.id}/keywords?api_key=${process.env.API_KEY}`)
+    .then(response => {
+      res.json(response.data)
+
+    })
+    .catch(err => {
+      console.log(err)
+    })
   })
+
 
 
 app.listen(PORT, () => {
