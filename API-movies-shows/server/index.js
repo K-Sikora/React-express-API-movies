@@ -73,6 +73,31 @@ app.get('/api/tv/keywords/:id', (req, res) => {
     .catch(err => {
       console.log(err)
     })
+})
+  
+
+
+app.get('/api/movie/similar/:id', (req, res) => {
+  axios.get(`https://api.themoviedb.org/3/movie/${req.params.id}/similar?api_key=${process.env.API_KEY}`)
+    .then(response => {
+      res.json(response.data)
+
+    })
+    .catch(err => {
+      console.log(err)
+    })
+})
+  
+
+app.get('/api/tv/similar/:id', (req, res) => {
+  axios.get(`https://api.themoviedb.org/3/tv/${req.params.id}/similar?api_key=${process.env.API_KEY}`)
+    .then(response => {
+      res.json(response.data)
+
+    })
+    .catch(err => {
+      console.log(err)
+    })
   })
 
 

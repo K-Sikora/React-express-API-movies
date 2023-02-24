@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import NotFound from './NotFound'
 import {motion, AnimatePresence} from 'framer-motion'
-import { useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate as RouterHistory, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faClock, faCircle, faChartColumn, faChevronDown, faListNumeric} from '@fortawesome/free-solid-svg-icons'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import axios from 'axios'
 
 const SingleItem = () => {
@@ -19,10 +21,15 @@ const SingleItem = () => {
   const [keyword, setKeyword] = useState({})
   const [episodesVisible, setEpisodesVisible] = useState(false)
   const [error, setError] = useState()
+  const [similar, setSimilar] = useState()
   const [isVisibleKeywords, setIsVisibleKeywords] = useState(false)
+
+
+
+
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/${item}/${id}`).then(
-      response => {
+    axios.get(`http://localhost:8080/api/${item}/${id}`).
+      then(response => {
         console.log(response.data)
         setItemData(response.data)
         setIsLoading(false)
@@ -34,8 +41,8 @@ const SingleItem = () => {
   }, [item, id])
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/${item}/keywords/${id}`).then(
-      response => {
+    axios.get(`http://localhost:8080/api/${item}/keywords/${id}`)
+      .then(response => {
         console.log(response.data)
         setKeyword(response.data)
         setIsLoading(false)
@@ -47,6 +54,34 @@ const SingleItem = () => {
     
   }, [item, id])
 
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/${item}/similar/${id}`)
+      .then(response => {
+      console.log(response.data)
+      setSimilar(response.data)
+      })
+      .catch(err => {
+      console.log(err)
+    })
+  }, [item, id])
+
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  });
+
+
   if (isLoading) {
     return <NotFound />
   }
@@ -57,18 +92,18 @@ const SingleItem = () => {
       <Navbar /> 
       <div className='max-w-6xl mx-auto'>
       {itemData && 
-        <div className='min-h-screen gap-6 bg-stone-800 flex flex-col  py-5 px-0 justify-start'>
+        <div className='min-h-screen gap-6 bg-stone-800 flex flex-col   py-5 px-0 justify-start'>
           <div className='px-5 flex flex-col gap-4'>
-          <h2 className=' text-2xl'>{itemData.name || itemData.title}</h2>
+          <h2 className=' text-2xl md:text-4xl'>{itemData.name || itemData.title}</h2>
           <span className=' flex items-center gap-2'>
-            <p className='text-base text-stone-300'>
+            <p className='text-base md:text-lg text-stone-300'>
               {itemData.release_date && itemData.release_date.slice(0, 4)}
               {itemData.first_air_date && itemData.first_air_date.slice(0, 4)}
             
             </p>
             <FontAwesomeIcon className='text-[6px] text-stone-200' icon={faCircle}></FontAwesomeIcon>
             {itemData.runtime && 
-            <p className='flex gap-1 text-sm  items-center text-stone-300'>
+            <p className='flex gap-1 text-sm md:text-base  items-center text-stone-300'>
               <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
               {itemData.runtime}m
               </p>
@@ -96,12 +131,12 @@ const SingleItem = () => {
                 </h5>}
             </span>
             </div>
-          <div className='h-4/6 relative'>
+          <div className=' h-[60vh] relative md:mx-5  '>
             <img className='w-full h-full object-cover' src={`https://image.tmdb.org/t/p/original` + itemData.backdrop_path} alt='cover image' />
             <div className='absolute left-2 bottom-2 h-40  z-[60]'>
             <img className='w-full h-full object-cover' src={`https://image.tmdb.org/t/p/original` + itemData.poster_path} />
             </div>
-            <div className='absolute flex items-center justify-center top-0 left-0 h-full w-full cursor-pointer duration-300 bg-black/20 hover:bg-black/40'>
+            <div className='absolute flex items-center justify-center top-0 left-0 h-full w-full cursor-pointer duration-300 bg-black/20  hover:bg-black/40'>
               {/* <FontAwesomeIcon className='text-emerald-400 text-3xl cursor-pointer' icon={faPlay}></FontAwesomeIcon> */}
             </div>
             </div>
@@ -156,14 +191,84 @@ const SingleItem = () => {
             
               </div>
           </div>
-              <div className='px-5 font-[Roboto]'> 
+              <div className='px-5 font-[Roboto] pb-5'> 
                 <p>{itemData.overview}</p>
             </div>
-            
-        </div>
+            {similar && <div className='px-5 flex flex-col gap-6'> 
+
+            <h3 className='text-2xl text-emerald-50'>
+              {item === 'movie' ? 'See similar movies' : 'See similar shows'}
+            </h3>
+
+              <Swiper
+                autoHeight={true}
+                slidesPerView={
+                  windowWidth > 1280 ? 5 :
+                  windowWidth > 768 ? 4 : 
+                  windowWidth < 768 ? 3 : null
+                
+                }
+                loop={true}
+            spaceBetween={20}
+            pagination={{
+            clickable: true,
+            }}
+            className="mySwiper h-[80vh] w-full"
+              >
+                {similar.results && similar.results
+                  .slice(0, 14)
+                  .map((similarItem, index) => (
+                    similarItem.backdrop_path && 
+                    <SwiperSlide key={index} className=' flex relative items-end '>
+
+                      <div className='absolute top-0 left-0'>
+                        <Link
+                            to={`/${item}/${similarItem.id}`}
+                        >
+                        <div className='relative '>
+                      <img className='rounded-md' src={`https://image.tmdb.org/t/p/original` + similarItem.poster_path} alt='background photo' />
+                              <div className='absolute bottom-2 left-2'>
+                              <CircularProgressbar styles={buildStyles({
+                textSize: '28px',
+                textColor: 'white',
+                trailColor: '#065f46',
+                pathColor: '#34d399'
+                
+              })} className='h-10 w-10 bg-stone-800 rounded-full font-semibold ' value={similarItem.vote_average * 10} text={`${similarItem.vote_average.toFixed(1) * 10 + '%'}`}></CircularProgressbar>
+
+
+                      </div>
+                          </div>
+                          </Link>
+                      <h5 className='mt-2 font-medium text-base text-stone-100'>
+                      {similarItem.name || similarItem.title}
+
+                      </h5>
+                      <h6 className='mt-2 font-medium text-base  text-stone-300'>
+                      {similarItem.release_date && similarItem.release_date.slice(0,4)  || similarItem.first_air_date && similarItem.first_air_date.slice(0,4)}
+
+                      </h6>
+
+                      </div>
+                      
+                    </SwiperSlide>
+
+                  ))
+                }
+
+            </Swiper>
+
+            </div>
+            }
+
+
+
+          </div>
+          
+          
         }
         </div>
-
+        
 
     </div>
   )
