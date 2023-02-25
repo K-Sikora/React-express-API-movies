@@ -13,7 +13,7 @@ function App() {
         <Routes>
           
       <Route path="/" element={<Homepage />} />
-      <Route path="/:item/:id" element={<SingleItem />} />
+      <Route path="/:itemType/:id" element={<SingleItem />} />
     </Routes>
     </div>
     </QueryClientProvider>

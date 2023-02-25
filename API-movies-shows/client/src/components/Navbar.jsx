@@ -93,7 +93,7 @@ const Navbar = () => {
           </motion.div>
                 <motion.div variants={childVariant} className='hidden relative md:block w-2/4 '>
                     <div className='w-full relative'>
-                    <input onBlur={focusLeaveHandler} onFocusCapture={updateSearchHandler} onChange={updateSearchHandler} className='w-full font-[Roboto] rounded-sm outline-none focus:outline-[2.5px] focus:outline-emerald-500 focus:-outline-offset-1 px-3 pr-10 text-base py-[.4rem] placeholder:text-base ' placeholder='Search for a movie/show...' />
+                    <input onBlur={focusLeaveHandler} onFocusCapture={updateSearchHandler} onChange={updateSearchHandler} className='w-full text-stone-700 font-[Roboto] rounded-sm outline-none focus:outline-[2.5px] focus:outline-emerald-500 focus:-outline-offset-1 px-3 pr-10 text-base py-[.4rem] placeholder:text-base ' placeholder='Search for a movie/show...' />
                     <FontAwesomeIcon className='absolute cursor-pointer  p-[0.6rem]  top-[0.7px] right-0 text-zinc-600 '  icon={faSearch}></FontAwesomeIcon>
                         </div>
                         

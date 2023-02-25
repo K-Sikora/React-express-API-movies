@@ -15,3 +15,27 @@
     color: #10B981;
     font-size: 2rem;
 }
+.scrollbar{
+    scrollbar-width: thin;
+    scrollbar-color: #57534e #d6d3d1;
+}
+
+.scrollbar::-webkit-scrollbar{
+    width: 2vw;
+}
+
+.scrollbar::-webkit-scrollbar-thumb{
+    background-color: #323232;
+    border-radius: 2px;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover{
+    background-color: #57534ee2;
+}
+
+.scrollbar::-webkit-scrollbar-track{
+    background-color: #d6d3d1;
+    border-radius: 2px;
+}
+.scrollbar::-webkit-scrollbar-track:hover{
+    background-color: #f5f5f4;
+}
