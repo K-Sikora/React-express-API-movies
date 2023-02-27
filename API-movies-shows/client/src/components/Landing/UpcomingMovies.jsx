@@ -2,7 +2,8 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -91,9 +92,17 @@ const LatestTrailers = (props) => {
                   </h3>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <button className="py-1 px-3 bg-red-400">See details</button>
-                  <button className="py-1 px-3 bg-blue-400">Trailer</button>
+                <div className="flex flex-col gap-2">
+                  <button className="py-1 px-3 bg-stone-700 hover:bg-stone-600 duration-300 rounded-md text-sm font-medium">
+                    See details
+                  </button>
+                  <button className="py-1 group flex items-center justify-center gap-1.5  px-3 bg-stone-800 rounded-md text-sm font-medium">
+                    <FontAwesomeIcon
+                      className="text-xs group-hover:text-emerald-500 duration-300 "
+                      icon={faPlay}
+                    ></FontAwesomeIcon>
+                    Trailer
+                  </button>
                 </div>
               </SwiperSlide>
             ))}
