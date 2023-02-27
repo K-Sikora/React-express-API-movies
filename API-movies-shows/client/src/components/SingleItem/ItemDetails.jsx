@@ -10,7 +10,7 @@ const ItemDetails = (props) => {
   return (
     <>
       {props.itemData.vote_average > 0 && (
-        <div className="flex items-center font-semibold gap-5 px-6">
+        <div className="flex items-center font-semibold gap-5 px-5">
           <CircularProgressbar
             styles={buildStyles({
               textSize: "26px",

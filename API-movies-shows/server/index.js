@@ -112,6 +112,19 @@ app.get("/api/tv/similar/:id", (req, res) => {
     });
 });
 
+app.get("/api/movie/upcoming", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.API_KEY}&language=en-US&page=1`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 app.listen(PORT, () => {
   console.log("Listening on port " + PORT);
 });

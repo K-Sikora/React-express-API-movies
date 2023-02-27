@@ -50,9 +50,11 @@ const Keywords = (props) => {
             </button>
           ))}
       </div>
-      <div className="px-5 font-[Roboto] pb-5">
-        <p>{props.itemData.overview}</p>
-      </div>
+      {props.itemData.overview && (
+        <div className="px-5 font-[Roboto] pb-5">
+          <p>{props.itemData.overview}</p>
+        </div>
+      )}
     </>
   );
 };

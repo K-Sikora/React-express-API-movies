@@ -43,3 +43,10 @@
 .scrollbar::-webkit-scrollbar-track:hover {
   background-color: #f5f5f4;
 }
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

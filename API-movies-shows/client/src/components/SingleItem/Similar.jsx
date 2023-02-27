@@ -27,9 +27,9 @@ const Similar = (props) => {
                         <a href={`/${props.itemType}/${similarItem.id}`}>
                           <div className="relative h-full w-full  ">
                             <img
-                              className="rounded-md w-full h-full object-cover "
+                              className="rounded-md h-64 w-40 object-cover "
                               src={
-                                `https://image.tmdb.org/t/p/original` +
+                                `https://image.tmdb.org/t/p/w300` +
                                 similarItem.poster_path
                               }
                               alt="background photo"
