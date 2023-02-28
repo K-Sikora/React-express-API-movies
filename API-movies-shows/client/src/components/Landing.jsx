@@ -2,6 +2,7 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import LandingSwiper from "./Landing/LandingSwiper";
+import TrailerPopup from "./Landing/TrailerPopup";
 import { useQuery } from "react-query";
 import UpcomingMovies from "./Landing/UpcomingMovies";
 const Landing = () => {
@@ -26,7 +27,7 @@ const Landing = () => {
   });
 
   return (
-    <div>
+    <div className="pb-20">
       <div className="h-screen relative max-w-6xl mx-auto mt-0 p-2 md:px-5 rounded-md ">
         <LandingSwiper trendingWeek={trendingWeek} />
       </div>

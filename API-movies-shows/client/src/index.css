@@ -11,6 +11,11 @@
   background-color: white;
   opacity: 0.8;
 }
+.upcoming .swiper-pagination-bullet {
+  background-color: white;
+  opacity: 0.8;
+  transform: translateY(155%);
+}
 .swiper-button-next::after,
 .swiper-button-prev::after {
   color: #10b981;

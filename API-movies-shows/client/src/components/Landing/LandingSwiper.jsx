@@ -47,9 +47,7 @@ const LandingSwiper = (props) => {
               <div className="w-full h-full relative group">
                 <img
                   className="h-full w-full  object-cover top-0 left-0"
-                  src={
-                    `https://image.tmdb.org/t/p/original` + item.backdrop_path
-                  }
+                  src={`https://image.tmdb.org/t/p/w1280` + item.backdrop_path}
                   alt="cover image"
                 />
                 <Link to={`/${item.media_type}/${item.id}`}>
