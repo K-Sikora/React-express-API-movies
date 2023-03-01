@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import NotFound from "./NotFound";
 import { useParams } from "react-router-dom";
@@ -8,59 +8,60 @@ import ItemInfo from "./SingleItem/ItemInfo";
 import ItemCoverImage from "./SingleItem/ItemCoverImage";
 import axios from "axios";
 import ItemDetails from "./SingleItem/ItemDetails";
+import { useQuery } from "react-query";
 
 const SingleItem = () => {
   const { itemType, id } = useParams();
-  const [itemData, setItemData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [keyword, setKeyword] = useState({});
   const [episodesVisible, setEpisodesVisible] = useState(false);
-  const [similar, setSimilar] = useState();
   const [isVisibleKeywords, setIsVisibleKeywords] = useState(false);
 
   //Get current item  data
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/${itemType}/${id}`)
-      .then((response) => {
-        console.log(response.data);
-        setItemData(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [itemType, id]);
+
+  const getItemData = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/${itemType}/${id}`
+    );
+    console.log(response.data);
+    return response.data;
+  };
+
+  const { data: itemData } = useQuery({
+    queryKey: ["itemData"],
+    queryFn: getItemData,
+    refetchOnWindowFocus: false,
+  });
 
   //Get keywords of current item
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/${itemType}/keywords/${id}`)
-      .then((response) => {
-        console.log(response.data);
-        setKeyword(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [itemType, id]);
+
+  const getKeywords = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/${itemType}/keywords/${id}`
+    );
+    console.log(response.data);
+    return response.data;
+  };
+
+  const { data: keyword } = useQuery({
+    queryKey: ["keyword"],
+    queryFn: getKeywords,
+    refetchOnWindowFocus: false,
+  });
 
   //Get similar movie/show to current item
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/${itemType}/similar/${id}`)
-      .then((response) => {
-        console.log(response.data);
-        setSimilar(response.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [itemType, id]);
 
-  if (isLoading) {
-    return <NotFound />;
-  }
+  const getSimilar = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/${itemType}/similar/${id}`
+    );
+    return response.data;
+  };
+
+  const { data: similar } = useQuery({
+    queryKey: ["similar"],
+    queryFn: getSimilar,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <div className="bg-stone-800 text-white">
