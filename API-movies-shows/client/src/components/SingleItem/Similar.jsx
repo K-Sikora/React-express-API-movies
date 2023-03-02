@@ -34,13 +34,17 @@ const Similar = (props) => {
                               }
                               alt="background photo"
                             />
-                            <div className="absolute bottom-2 left-2">
-                              <CircularProgressbar
-                                styles={buildStyles({
-                                  textSize: "28px",
-                                  textColor: "white",
-                                  trailColor: "#065f46",
-                                  pathColor: `
+                            {similarItem.vote_average === null ||
+                            similarItem.vote_average === 0 ? (
+                              ""
+                            ) : (
+                              <div className="absolute bottom-2 left-2">
+                                <CircularProgressbar
+                                  styles={buildStyles({
+                                    textSize: "28px",
+                                    textColor: "white",
+                                    trailColor: "#065f46",
+                                    pathColor: `
                                   ${
                                     similarItem.vote_average * 10 <= 30
                                       ? `#ef4444`
@@ -57,14 +61,16 @@ const Similar = (props) => {
                                   }
                                   
                                   `,
-                                })}
-                                className="h-10 w-10 bg-stone-800 rounded-full font-semibold "
-                                value={similarItem.vote_average * 10}
-                                text={`${
-                                  similarItem.vote_average.toFixed(1) * 10 + "%"
-                                }`}
-                              ></CircularProgressbar>
-                            </div>
+                                  })}
+                                  className="h-10 w-10 bg-stone-800 rounded-full font-semibold "
+                                  value={similarItem.vote_average * 10}
+                                  text={`${
+                                    similarItem.vote_average.toFixed(1) * 10 +
+                                    "%"
+                                  }`}
+                                ></CircularProgressbar>
+                              </div>
+                            )}
                           </div>
                         </a>
                         <h5 className="mt-2 font-medium w-5/6 text-sm text-stone-100">

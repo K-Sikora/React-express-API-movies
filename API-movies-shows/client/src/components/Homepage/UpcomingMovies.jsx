@@ -1,20 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-// Import Swiper styles
+import { useQuery } from "react-query";
+import axios from "axios";
+import { motion, useCycle } from "framer-motion";
+
 import "swiper/css";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper";
+import TrailerPopup from "./TrailerPopup";
 const date = new Date();
-const LatestTrailers = (props) => {
+
+const LatestTrailers = () => {
+  const getUpcomingMovies = async () => {
+    const response = await axios.get(
+      "http://localhost:8080/api/movie/upcoming"
+    );
+    console.log(response.data.results);
+
+    return response.data.results;
+  };
+  const [opacity, cycleOpacity] = useCycle(0, 1);
+
+  const { data: upcomingMovies, isLoading } = useQuery({
+    queryKey: ["upcomingMovies"],
+    queryFn: getUpcomingMovies,
+    refetchOnWindowFocus: false,
+  });
+
+  const [movieId, setMovieId] = useState();
+  const [trailerVisible, setTrailerVisible] = useState(false);
+
   return (
     <div className="max-w-6xl mx-auto px-5 text-white">
-      <h2 className=" text-2xl mb-8">New and upcoming movies</h2>
-      <div>
+      <h2 className=" text-2xl">New and upcoming movies</h2>
+      <div className="relative">
+        {isLoading && (
+          <div className="flex gap-4 absolute top-1/2 left-1/2  items-center justify-center">
+            <motion.div
+              animate={{ opacity }}
+              transition={{ duration: 0.15, delay: 0.1, ease: "easeIn" }}
+              className="bg-emerald-500 w-6 h-6 rounded-full"
+            ></motion.div>
+            <motion.div
+              animate={{ opacity }}
+              transition={{ duration: 0.15, delay: 0.2, ease: "easeIn" }}
+              className="bg-emerald-500 w-6 h-6 rounded-full"
+            ></motion.div>
+            <motion.div
+              animate={{ opacity }}
+              transition={{ duration: 0.15, delay: 0.3, ease: "easeIn" }}
+              className="bg-emerald-500 w-6 h-6 rounded-full"
+            ></motion.div>
+          </div>
+        )}
         <Swiper
           spaceBetween={5}
           slidesPerView={1}
@@ -40,8 +82,8 @@ const LatestTrailers = (props) => {
           modules={[Pagination]}
           className="mySwiper upcoming h-[26rem] md:h-[24rem] py-6 lg:h-[24rem]  cursor-grab relative  "
         >
-          {props.upcomingMovies &&
-            props.upcomingMovies.map((item, index) => (
+          {upcomingMovies &&
+            upcomingMovies.map((item, index) => (
               <SwiperSlide
                 key={index}
                 className="flex flex-col relative justify-between p-1  "
@@ -93,12 +135,18 @@ const LatestTrailers = (props) => {
                 </h3>
 
                 <div className="flex flex-col gap-2">
-                  <Link to={`/movie/${item.id}`}>
+                  <a href={`/movie/${item.id}`}>
                     <button className="py-1 w-full px-1 bg-stone-700 hover:bg-stone-600 duration-300 rounded-md text-sm font-medium">
                       See details
                     </button>
-                  </Link>
-                  <button className="py-1 group flex items-center justify-center gap-1.5  px-1 bg-stone-800 rounded-md text-sm font-medium">
+                  </a>
+                  <button
+                    onClick={() => {
+                      setMovieId(item.id);
+                      setTrailerVisible(true);
+                    }}
+                    className="py-1 group flex items-center justify-center gap-1.5  px-1 bg-stone-800 rounded-md text-sm font-medium"
+                  >
                     <FontAwesomeIcon
                       className="text-xs group-hover:text-emerald-500 duration-300 "
                       icon={faPlay}
@@ -112,6 +160,13 @@ const LatestTrailers = (props) => {
           <div className="h-full w-10 from-stone-900/60 to-black/0 bg-gradient-to-l z-10 right-0 top-0 absolute pointer-events-none "></div>
         </Swiper>
       </div>
+      {trailerVisible && (
+        <TrailerPopup
+          trailerVisible={trailerVisible}
+          setTrailerVisible={setTrailerVisible}
+          movieId={movieId}
+        />
+      )}
     </div>
   );
 };

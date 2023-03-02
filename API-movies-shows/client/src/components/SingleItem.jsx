@@ -12,7 +12,6 @@ import { useQuery } from "react-query";
 
 const SingleItem = () => {
   const { itemType, id } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
   const [episodesVisible, setEpisodesVisible] = useState(false);
   const [isVisibleKeywords, setIsVisibleKeywords] = useState(false);
 
@@ -26,7 +25,7 @@ const SingleItem = () => {
     return response.data;
   };
 
-  const { data: itemData } = useQuery({
+  const { data: itemData, isLoading } = useQuery({
     queryKey: ["itemData"],
     queryFn: getItemData,
     refetchOnWindowFocus: false,
@@ -63,6 +62,9 @@ const SingleItem = () => {
     refetchOnWindowFocus: false,
   });
 
+  if (isLoading) {
+    return <NotFound />;
+  }
   return (
     <div className="bg-stone-800 text-white">
       <Navbar />
