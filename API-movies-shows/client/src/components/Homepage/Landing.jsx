@@ -1,11 +1,7 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import LandingSwiper from "./LandingSwiper";
-import NotFound from "../NotFound";
-import TrailerPopup from "./TrailerPopup";
 import { useQuery } from "react-query";
-import UpcomingMovies from "./UpcomingMovies";
 const Landing = () => {
   const getTrendingWeek = async () => {
     const response = await axios.get("http://localhost:8080/api/trending-week");

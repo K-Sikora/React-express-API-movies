@@ -8,7 +8,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/swiper-bundle.css";
 import "swiper/css";
-
 const LandingSwiper = (props) => {
   const handleSwiperInit = (swiper) => {
     swiper.autoplay.start();

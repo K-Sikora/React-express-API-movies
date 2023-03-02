@@ -3,7 +3,6 @@ import Homepage from "./components/Homepage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Route, Routes } from "react-router-dom";
 import SingleItem from "./components/SingleItem";
-
 const queryClient = new QueryClient();
 function App() {
   return (
