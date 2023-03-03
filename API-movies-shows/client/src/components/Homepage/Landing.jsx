@@ -15,7 +15,7 @@ const Landing = () => {
   });
 
   return (
-    <div className="pb-20">
+    <div>
       <div className="h-screen relative max-w-6xl mx-auto mt-0 p-2 md:px-5 rounded-md ">
         <LandingSwiper trendingWeek={trendingWeek} />
       </div>

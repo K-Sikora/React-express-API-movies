@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { ScaleLoader } from "react-spinners";
+import LazyLoad from "react-lazyload";
+
 import { Link } from "react-router-dom";
 
 import "react-circular-progressbar/dist/styles.css";
 
 const Similar = (props) => {
+  const [loading, setLoading] = useState(true);
   return (
-    <>
+    <LazyLoad>
       {props.similar && (
         <div className="px-5 flex flex-col gap-6 ">
           <h3 className="text-2xl text-stone-100">
@@ -27,6 +31,9 @@ const Similar = (props) => {
                         <a href={`/${props.itemType}/${similarItem.id}`}>
                           <div className="relative h-full w-full  ">
                             <img
+                              onLoad={() => {
+                                setLoading(false);
+                              }}
                               className="rounded-md h-64 w-40 object-cover "
                               src={
                                 `https://image.tmdb.org/t/p/w300` +
@@ -71,6 +78,11 @@ const Similar = (props) => {
                                 ></CircularProgressbar>
                               </div>
                             )}
+                            {loading && (
+                              <div className="absolute top-0 items-center  justify-center left-0 w-full h-full flex  ">
+                                <ScaleLoader color="#10b981" />
+                              </div>
+                            )}
                           </div>
                         </a>
                         <h5 className="mt-2 font-medium w-5/6 text-sm text-stone-100">
@@ -89,7 +101,7 @@ const Similar = (props) => {
           </div>
         </div>
       )}
-    </>
+    </LazyLoad>
   );
 };
 

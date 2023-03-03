@@ -7,10 +7,10 @@ import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "react-query";
 import axios from "axios";
 import LazyLoad from "react-lazyload";
+import { ScaleLoader } from "react-spinners";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper";
-import Loader from "../Loader";
 import TrailerPopup from "./TrailerPopup";
 const date = new Date();
 
@@ -30,11 +30,12 @@ const LatestTrailers = () => {
     refetchOnWindowFocus: false,
   });
 
+  const [loading, setLoading] = useState(true);
   const [movieId, setMovieId] = useState();
   const [trailerVisible, setTrailerVisible] = useState(false);
 
   return (
-    <LazyLoad placeholder={<Loader />}>
+    <LazyLoad>
       <div className="max-w-6xl mx-auto px-5 text-white">
         <h2 className=" text-2xl">New and upcoming movies</h2>
         <div className="relative">
@@ -69,10 +70,13 @@ const LatestTrailers = () => {
                   key={index}
                   className="flex flex-col relative justify-between p-1  "
                 >
-                  <div className="relative top-0 left-0">
+                  <div className="relative flex items-center justify-center top-0 left-0">
                     <img
+                      onLoad={() => {
+                        setLoading(false);
+                      }}
                       className=" h-60 md:h-52 object-cover rounded-sm"
-                      src={`https://image.tmdb.org/t/p/w300` + item.poster_path}
+                      src={`https://image.tmdb.org/t/p/w500` + item.poster_path}
                     />
                     <div className="flex mt-2 absolute bottom-0 left-0 bg-stone-900/50 w-full text-sm font-medium  h-1/5 items-center">
                       {new Date(item.release_date) < date && (
@@ -109,6 +113,11 @@ const LatestTrailers = () => {
                         ? `${item.release_date}`
                         : null}
                     </div>
+                    {loading && (
+                      <div className="absolute top-0 items-center  justify-center left-0 w-full h-full flex  ">
+                        <ScaleLoader color="#10b981" />
+                      </div>
+                    )}
                   </div>
                   <h3 className="pointer-events-none  text-sm line-clamp ">
                     {item.title}

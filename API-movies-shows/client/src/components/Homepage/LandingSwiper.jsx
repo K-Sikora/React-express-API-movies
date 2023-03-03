@@ -4,6 +4,8 @@ import { Autoplay, Pagination, Navigation, EffectFade } from "swiper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { ScaleLoader } from "react-spinners";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/swiper-bundle.css";
@@ -18,6 +20,8 @@ const LandingSwiper = (props) => {
       }
     }, 6000);
   };
+
+  const [loading, setLoading] = useState(true);
 
   return (
     <Swiper
@@ -36,7 +40,7 @@ const LandingSwiper = (props) => {
         clickable: true,
       }}
       modules={[Autoplay, Pagination, Navigation, EffectFade]}
-      className="mySwiper shadow-lg shadow-stone-700/30 h-5/6  bg-neutral-900 relative"
+      className="mySwiper shadow-lg shadow-stone-700/30 h-5/6 bg-neutral-900 relative"
     >
       {props.trendingWeek &&
         props.trendingWeek
@@ -45,6 +49,7 @@ const LandingSwiper = (props) => {
             <SwiperSlide key={index}>
               <div className="w-full h-full relative group">
                 <img
+                  onLoad={() => setLoading(false)}
                   className="h-full w-full  object-cover top-0 left-0"
                   src={`https://image.tmdb.org/t/p/w1280` + item.backdrop_path}
                   alt="cover image"
@@ -83,6 +88,11 @@ const LandingSwiper = (props) => {
                     </div>
                   </div>
                 </Link>
+                {loading && (
+                  <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center z-50">
+                    <ScaleLoader color="#10b981" />
+                  </div>
+                )}
               </div>
             </SwiperSlide>
           ))}
