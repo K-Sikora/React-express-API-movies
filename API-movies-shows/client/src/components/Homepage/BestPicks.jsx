@@ -12,34 +12,30 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper";
 import TrailerPopup from "./TrailerPopup";
-const date = new Date();
 
-const LatestTrailers = () => {
-  const getUpcomingMovies = async () => {
-    const response = await axios.get(
-      "http://localhost:8080/api/movie/upcoming"
-    );
+const BestPicks = () => {
+  const getBestMovies = async () => {
+    const response = await axios.get("http://localhost:8080/api/bestmovies");
     console.log(response.data.results);
 
     return response.data.results;
   };
 
-  const { data: upcomingMovies, isLoading } = useQuery({
-    queryKey: ["upcomingMovies"],
-    queryFn: getUpcomingMovies,
+  const { data: bestMovies, isLoading } = useQuery({
+    queryKey: ["bestMovies"],
+    queryFn: getBestMovies,
     refetchOnWindowFocus: false,
   });
 
   const [loading, setLoading] = useState(true);
   const [movieId, setMovieId] = useState();
   const [trailerVisible, setTrailerVisible] = useState(false);
-
   return (
     <LazyLoad>
-      <div className="max-w-6xl mx-auto px-5 mb-14 text-white">
+      <div className="max-w-6xl mx-auto px-5 text-white mb-14">
         <h2 className=" text-2xl">
           <span className=" bg-emerald-500 mr-2 px-[2px] rounded-md"></span>
-          New and upcoming movies
+          Best movies
         </h2>
         <div className="relative">
           <Swiper
@@ -64,24 +60,27 @@ const LatestTrailers = () => {
               },
             }}
             modules={[Pagination]}
-            className="mySwiper upcoming h-[26rem] md:h-[24rem] py-6 lg:h-[24rem]   relative  "
+            className="mySwiper upcoming h-[26rem] md:h-[24rem] py-6 lg:h-[24rem]  cursor-grab relative  "
           >
-            {upcomingMovies &&
-              upcomingMovies.map((item, index) => (
-                <SwiperSlide
-                  key={index}
-                  className="flex flex-col relative justify-between p-1  "
-                >
-                  <div className="relative flex items-center justify-center top-0 left-0">
-                    <img
-                      onLoad={() => {
-                        setLoading(false);
-                      }}
-                      className=" h-60 md:h-52 object-cover rounded-sm cursor-grab"
-                      src={`https://image.tmdb.org/t/p/w500` + item.poster_path}
-                    />
-                    <div className="flex mt-2 absolute bottom-0 left-0 px-2 pointer-events-none bg-stone-900/50 w-full text-sm font-medium  h-1/5 items-center">
-                      {new Date(item.release_date) < date && (
+            {bestMovies &&
+              bestMovies
+                .filter((item) => item.vote_count > 1000)
+                .map((item, index) => (
+                  <SwiperSlide
+                    key={index}
+                    className="flex flex-col relative justify-between p-1  "
+                  >
+                    <div className="relative flex items-center justify-center top-0 left-0">
+                      <img
+                        onLoad={() => {
+                          setLoading(false);
+                        }}
+                        className=" h-60 md:h-52 object-cover rounded-sm cursor-grab"
+                        src={
+                          `https://image.tmdb.org/t/p/w500` + item.poster_path
+                        }
+                      />
+                      <div className="flex mt-2 absolute bottom-0 left-0 px-2 bg-stone-900/50 w-full text-sm font-medium pointer-events-none  h-1/5 items-center">
                         <CircularProgressbar
                           styles={buildStyles({
                             textSize: "28px",
@@ -109,44 +108,39 @@ const LatestTrailers = () => {
                           value={item.vote_average * 10}
                           text={`${item.vote_average.toFixed(1) * 10 + "%"}`}
                         ></CircularProgressbar>
-                      )}
-
-                      {new Date(item.release_date) > date
-                        ? `${item.release_date}`
-                        : null}
-                    </div>
-                    {loading && (
-                      <div className="absolute top-0 items-center  justify-center left-0 w-full h-full flex  ">
-                        <ScaleLoader color="#10b981" />
                       </div>
-                    )}
-                  </div>
-                  <h3 className="pointer-events-none  text-sm line-clamp ">
-                    {item.title}
-                  </h3>
+                      {loading && (
+                        <div className="absolute top-0 items-center  justify-center left-0 w-full h-full flex  ">
+                          <ScaleLoader color="#10b981" />
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="pointer-events-none  text-sm line-clamp ">
+                      {item.title}
+                    </h3>
 
-                  <div className="flex flex-col gap-2">
-                    <a href={`/movie/${item.id}`}>
-                      <button className="py-1 w-full px-1 bg-stone-700 hover:bg-stone-600 duration-300 rounded-md text-sm font-medium">
-                        See details
+                    <div className="flex flex-col gap-2">
+                      <a href={`/movie/${item.id}`}>
+                        <button className="py-1 w-full px-1 bg-stone-700 hover:bg-stone-600 duration-300 rounded-md text-sm font-medium">
+                          See details
+                        </button>
+                      </a>
+                      <button
+                        onClick={() => {
+                          setMovieId(item.id);
+                          setTrailerVisible(true);
+                        }}
+                        className="py-1 group flex items-center justify-center gap-1.5  px-1 bg-stone-800 rounded-md text-sm font-medium"
+                      >
+                        <FontAwesomeIcon
+                          className="text-xs group-hover:text-emerald-500 duration-300 "
+                          icon={faPlay}
+                        ></FontAwesomeIcon>
+                        Trailer
                       </button>
-                    </a>
-                    <button
-                      onClick={() => {
-                        setMovieId(item.id);
-                        setTrailerVisible(true);
-                      }}
-                      className="py-1 group flex items-center justify-center gap-1.5  px-1 bg-stone-800 rounded-md text-sm font-medium"
-                    >
-                      <FontAwesomeIcon
-                        className="text-xs group-hover:text-emerald-500 duration-300 "
-                        icon={faPlay}
-                      ></FontAwesomeIcon>
-                      Trailer
-                    </button>
-                  </div>
-                </SwiperSlide>
-              ))}
+                    </div>
+                  </SwiperSlide>
+                ))}
             <div className="h-full w-10 from-stone-900/60 to-black/0 bg-gradient-to-r z-10 left-0 top-0 absolute pointer-events-none "></div>
             <div className="h-full w-10 from-stone-900/60 to-black/0 bg-gradient-to-l z-10 right-0 top-0 absolute pointer-events-none "></div>
           </Swiper>
@@ -163,4 +157,4 @@ const LatestTrailers = () => {
   );
 };
 
-export default LatestTrailers;
+export default BestPicks;

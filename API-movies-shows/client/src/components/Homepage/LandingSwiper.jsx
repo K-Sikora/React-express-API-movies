@@ -40,7 +40,7 @@ const LandingSwiper = (props) => {
         clickable: true,
       }}
       modules={[Autoplay, Pagination, Navigation, EffectFade]}
-      className="mySwiper shadow-lg shadow-stone-700/30 h-5/6 bg-neutral-900 relative"
+      className="mySwiper shadow-lg shadow-stone-700/10 h-5/6 bg-neutral-900 relative"
     >
       {props.trendingWeek &&
         props.trendingWeek
@@ -54,7 +54,7 @@ const LandingSwiper = (props) => {
                   src={`https://image.tmdb.org/t/p/w1280` + item.backdrop_path}
                   alt="cover image"
                 />
-                <Link to={`/${item.media_type}/${item.id}`}>
+                <a href={`/${item.media_type}/${item.id}`}>
                   <div className="absolute top-0 left-0 bg-black/50 w-full h-full z-50  hover:bg-black/20 duration-300 cursor-pointer "></div>
                   <div className="absolute w-full left-0  bottom-[10%] gap-3 flex  pointer-events-none z-[100]">
                     <div className="w-10% ">
@@ -87,7 +87,7 @@ const LandingSwiper = (props) => {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </a>
                 {loading && (
                   <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center z-50">
                     <ScaleLoader color="#10b981" />

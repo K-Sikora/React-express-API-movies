@@ -14,7 +14,7 @@
 .upcoming .swiper-pagination-bullet {
   background-color: white;
   opacity: 0.8;
-  transform: translateY(155%);
+  transform: translateY(175%);
 }
 .swiper-button-next::after,
 .swiper-button-prev::after {

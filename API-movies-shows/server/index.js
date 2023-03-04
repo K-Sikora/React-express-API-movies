@@ -136,6 +136,43 @@ app.get("/api/movie/trailer/:id", (req, res) => {
       console.log(err);
     });
 });
+app.get("/api/tv/trailer/:id", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/tv/${req.params.id}/videos?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/api/bestmovies", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+app.get("/api/besttv", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/tv/top_rated?api_key=${process.env.API_KEY}`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.listen(PORT, () => {
   console.log("Listening on port " + PORT);

@@ -85,7 +85,7 @@ const Similar = (props) => {
                             )}
                           </div>
                         </a>
-                        <h5 className="mt-2 font-medium w-5/6 text-sm text-stone-100">
+                        <h5 className="mt-2 font-medium line-clamp text-sm text-stone-100">
                           {similarItem.name || similarItem.title}
                         </h5>
                         <h6 className="mt-2 font-medium text-base  text-stone-300">
