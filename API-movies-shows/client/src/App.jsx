@@ -19,7 +19,7 @@ function App() {
             element={<SingleItem />}
           />
           <Route
-            path="/category/:category"
+            path="/category/:category/:page"
             element={<Categories />}
           />
         </Routes>
