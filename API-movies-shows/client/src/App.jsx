@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Route, Routes } from "react-router-dom";
 import SingleItem from "./components/SingleItem";
 import Categories from "./components/Categories";
+import CategoriesTv from "./components/CategoriesTv";
 const queryClient = new QueryClient();
 function App() {
   return (
@@ -19,8 +20,12 @@ function App() {
             element={<SingleItem />}
           />
           <Route
-            path="/category/:category/:page"
+            path="/movie/category/:category/:page"
             element={<Categories />}
+          />
+          <Route
+            path="/tv/category/:category/:page"
+            element={<CategoriesTv />}
           />
         </Routes>
       </div>

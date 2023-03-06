@@ -88,6 +88,7 @@ const SingleItem = () => {
               isVisibleKeywords={isVisibleKeywords}
               keyword={keyword}
               itemData={itemData}
+              itemType={itemType}
             />
             <Similar
               similar={similar}

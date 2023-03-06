@@ -9,20 +9,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Navbar from "./Navbar";
-const Categories = () => {
+const CategoriesTv = () => {
   const { category, page } = useParams();
   const navigate = useNavigate();
-  const getCurrentCategory = async () => {
+  const getCurrentTvCategory = async () => {
     const response = await axios.get(
-      `http://localhost:8080/api/movie/categories/${category}/${page}`
+      `http://localhost:8080/api/tv/categories/${category}/${page}`
     );
     console.log(response.data);
     return response.data;
   };
 
-  const { data: currentCategory } = useQuery({
-    queryKey: ["currentCategory"],
-    queryFn: getCurrentCategory,
+  const { data: currentTvCategory } = useQuery({
+    queryKey: ["currentTvCategory"],
+    queryFn: getCurrentTvCategory,
     refetchOnWindowFocus: false,
   });
 
@@ -30,12 +30,12 @@ const Categories = () => {
     if (parseInt(page) === 1) {
       null;
     } else {
-      navigate(`/movie/category/${category}/${parseInt(page) - 1}`);
+      navigate(`/tv/category/${category}/${parseInt(page) - 1}`);
       window.location.reload();
     }
   };
   const nextPage = () => {
-    navigate(`/movie/category/${category}/${parseInt(page) + 1}`);
+    navigate(`/tv/category/${category}/${parseInt(page) + 1}`);
     window.location.reload();
   };
   return (
@@ -47,11 +47,11 @@ const Categories = () => {
             {category}
           </h2>
 
-          {currentCategory && (
+          {currentTvCategory && (
             <img
               src={
                 `https://image.tmdb.org/t/p/w1280` +
-                currentCategory.results[0].backdrop_path
+                currentTvCategory.results[0].backdrop_path
               }
               className="w-full h-full object-cover absolute top-0 left-0 z-10 "
             />
@@ -60,18 +60,18 @@ const Categories = () => {
           <div className="w-full h-full bg-black/30 absolute top-0 left-0 z-20"></div>
         </div>
         <div className="flex gap-5 p-5 justify-center items-center">
-          <button className="bg-emerald-700 px-4 py-2 rounded-md text-sm">
-            Movies
-          </button>
-          <Link to={`/tv/category/${category}/1`}>
-            <button className="hover:bg-emerald-700 duration-300 px-4 py-2 rounded-md text-sm">
-              Shows
+          <Link to={`/movie/category/${category}/1`}>
+            <button className=" px-4 py-2 hover:bg-emerald-700 duration-300 rounded-md text-sm">
+              Movies
             </button>
           </Link>
+          <button className="bg-emerald-700 px-4 py-2 rounded-md text-sm">
+            Shows
+          </button>
         </div>
         <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-6">
-          {currentCategory &&
-            currentCategory.results.map((item) => (
+          {currentTvCategory &&
+            currentTvCategory.results.map((item) => (
               <div className="flex h-40  gap-4 bg-stone-900 shadow-xl shadow-stone-900/60 mx-6 mt-6 pr-2 rounded-md">
                 <div className=" h-32 flex-shrink-0  ">
                   <img
@@ -81,9 +81,9 @@ const Categories = () => {
                 </div>
                 <div className="flex   justify-around flex-col h-full">
                   <div>
-                    <h4 className="text-base md:text-lg">{item.title}</h4>
+                    <h4 className="text-base md:text-lg">{item.name}</h4>
                     <p className="text-sm text-stone-400">
-                      {item.release_date}
+                      {item.first_air_date}
                     </p>
                   </div>
                   <p className="line-clamp text-stone-100 text-sm md:text-base">
@@ -119,4 +119,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default CategoriesTv;

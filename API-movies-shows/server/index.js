@@ -174,10 +174,21 @@ app.get("/api/besttv", (req, res) => {
     });
 });
 
-app.get("/api/categories/:category/:page", (req, res) => {
+app.get("/api/movie/categories/:category/:page", (req, res) => {
   axios
     .get(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${req.params.page}&with_genres=${req.params.category}&with_watch_monetization_types=flatrate`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => console.log(err));
+});
+
+app.get("/api/tv/categories/:category/:page", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.API_KEY}&language=en-US&sort_by=popularity.desc&page=${req.params.page}&with_genres=${req.params.category}&include_null_first_air_dates=false&with_watch_monetization_types=flatrate&with_status=0&with_type=0`
     )
     .then((response) => {
       res.json(response.data);
