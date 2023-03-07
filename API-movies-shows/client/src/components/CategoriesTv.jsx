@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import {
   faChevronLeft,
   faChevronRight,
@@ -72,7 +73,7 @@ const CategoriesTv = () => {
         <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-6">
           {currentTvCategory &&
             currentTvCategory.results.map((item) => (
-              <div className="flex h-40  gap-4 bg-stone-900 shadow-xl shadow-stone-900/60 mx-6 mt-6 pr-2 rounded-md">
+              <div className="flex h-40 gap-4 relative bg-stone-900 shadow-xl shadow-stone-900/60 mx-6 mt-6 pr-2 rounded-md">
                 <div className=" h-32 flex-shrink-0  ">
                   <img
                     className=" h-40 w-28 object-cover rounded-l-md pointer-events-none "
@@ -89,6 +90,32 @@ const CategoriesTv = () => {
                   <p className="line-clamp text-stone-100 text-sm md:text-base">
                     {item.overview}{" "}
                   </p>
+                </div>
+                <div className="absolute left-1 bg-stone-900/80 rounded-full bottom-2">
+                  <CircularProgressbar
+                    styles={buildStyles({
+                      textSize: "28px",
+                      textColor: "white",
+                      trailColor: "#065f46",
+                      pathColor: `
+              ${
+                item.vote_average * 10 <= 30
+                  ? `#ef4444`
+                  : item.vote_average * 10 > 30 && item.vote_average * 10 <= 50
+                  ? `#f97316`
+                  : item.vote_average * 10 > 50 && item.vote_average * 10 <= 70
+                  ? `#facc15`
+                  : item.vote_average * 10 > 70 && item.vote_average * 10 <= 84
+                  ? `#059669`
+                  : `#10b981`
+              }
+              
+              `,
+                    })}
+                    className="h-10 w-10 "
+                    value={item.vote_average * 10}
+                    text={`${item.vote_average.toFixed(1) * 10 + "%"}`}
+                  ></CircularProgressbar>
                 </div>
               </div>
             ))}
