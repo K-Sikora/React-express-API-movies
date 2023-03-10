@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -12,21 +11,9 @@ import {
 import axios from "axios";
 import Navbar from "./Navbar";
 const Categories = () => {
+  const [currentUrlCategory, setCurrentUrlCategory] = useState();
   const { category, page } = useParams();
   const navigate = useNavigate();
-  const getCurrentCategory = async () => {
-    const response = await axios.get(
-      `http://localhost:8080/api/movie/categories/${category}/${page}`
-    );
-    console.log(response.data);
-    return response.data;
-  };
-
-  const { data: currentCategory } = useQuery({
-    queryKey: ["currentCategory"],
-    queryFn: getCurrentCategory,
-    refetchOnWindowFocus: false,
-  });
 
   const prevPage = () => {
     if (parseInt(page) === 1) {
@@ -40,13 +27,44 @@ const Categories = () => {
     navigate(`/movie/category/${category}/${parseInt(page) + 1}`);
     window.location.reload();
   };
+
+  const getGenres = async () => {
+    const response = await axios.get("http://localhost:8080/api/moviegenres");
+    console.log(response.data);
+    response.data.genres.map((item) => {
+      item.name === category ? setCurrentUrlCategory(item.id) : null;
+    });
+    return response.data;
+  };
+  const { data: movieGenres } = useQuery({
+    queryKey: "movieGenres",
+    queryFn: getGenres,
+    refetchOnWindowFocus: false,
+  });
+  const getCurrentCategory = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/movie/categories/${currentUrlCategory}/${page}`
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  const { data: currentCategory } = useQuery({
+    queryKey: ["currentCategory"],
+    queryFn: getCurrentCategory,
+    refetchOnWindowFocus: false,
+    enabled: !!currentUrlCategory,
+  });
+
   return (
     <div className="bg-stone-800">
       <Navbar />
       <div className="  text-white ">
         <div className="relative py-20 md:py-24 lg:py-28 ">
           <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-2xl font-medium capitalize z-30 ">
-            {category}
+            {movieGenres &&
+              movieGenres.genres.map((item) =>
+                item.name === category ? <p>{item.name}</p> : null
+              )}
           </h2>
 
           {currentCategory && (
@@ -61,29 +79,25 @@ const Categories = () => {
 
           <div className="w-full h-full bg-black/30 absolute top-0 left-0 z-20"></div>
         </div>
-        <div className="flex gap-5 p-5 justify-center items-center">
-          <button className="bg-emerald-700 px-4 py-2 rounded-md text-sm">
-            Movies
-          </button>
-          <Link to={`/tv/category/${category}/1`}>
-            <button className="hover:bg-emerald-700 duration-300 px-4 py-2 rounded-md text-sm">
-              Shows
-            </button>
-          </Link>
-        </div>
+
         <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-6">
           {currentCategory &&
             currentCategory.results.map((item) => (
               <div className="flex h-40 relative gap-4 bg-stone-900 shadow-xl shadow-stone-900/60 mx-6 mt-6 pr-2 rounded-md">
                 <div className=" h-32 flex-shrink-0  ">
-                  <img
-                    className=" h-40 w-28 object-cover rounded-l-md pointer-events-none "
-                    src={`https://image.tmdb.org/t/p/w300` + item.poster_path}
-                  />
+                  <Link to={`/movie/${item.id}`}>
+                    <img
+                      className=" h-40 w-28 object-cover rounded-l-md pointer-events-none "
+                      src={`https://image.tmdb.org/t/p/w300` + item.poster_path}
+                    />
+                  </Link>
                 </div>
                 <div className="flex   justify-around flex-col h-full">
                   <div>
-                    <h4 className="text-base md:text-lg">{item.title}</h4>
+                    <Link to={`/movie/${item.id}`}>
+                      <h4 className="text-base md:text-lg">{item.title}</h4>
+                    </Link>
+
                     <p className="text-sm text-stone-400">
                       {item.release_date}
                     </p>

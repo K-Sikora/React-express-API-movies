@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import SingleItem from "./components/SingleItem";
 import Categories from "./components/Categories";
 import CategoriesTv from "./components/CategoriesTv";
+
 const queryClient = new QueryClient();
 function App() {
   return (

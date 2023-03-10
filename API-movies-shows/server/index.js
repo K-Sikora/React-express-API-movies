@@ -174,6 +174,27 @@ app.get("/api/besttv", (req, res) => {
     });
 });
 
+app.get("/api/moviegenres", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => console.log(err));
+});
+app.get("/api/tvgenres", (req, res) => {
+  axios
+    .get(
+      `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.API_KEY}&language=en-US`
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+    .catch((err) => console.log(err));
+});
+
 app.get("/api/movie/categories/:category/:page", (req, res) => {
   axios
     .get(
