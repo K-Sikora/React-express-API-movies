@@ -22,11 +22,13 @@ const CategoriesTv = () => {
     } else {
       navigate(`/tv/category/${category}/${parseInt(page) - 1}`);
       window.location.reload();
+      window && window.scroll(0, 0);
     }
   };
   const nextPage = () => {
     navigate(`/tv/category/${category}/${parseInt(page) + 1}`);
     window.location.reload();
+    window && window.scroll(0, 0);
   };
 
   const getGenres = async () => {
@@ -56,18 +58,27 @@ const CategoriesTv = () => {
     refetchOnWindowFocus: false,
     enabled: !!currentUrlCategory,
   });
+  const [pageValue, setPageValue] = useState();
+  const handleJumpToPage = () => {
+    navigate(`/movie/category/${category}/${pageValue}`);
+    window.location.reload();
+    window && window.scroll(0, 0);
+  };
   return (
     <div className="bg-stone-800">
       <Navbar />
-      <div className="  text-white ">
+      <div className="  text-white pb-4 ">
         <div className="relative py-20 md:py-24 lg:py-28 ">
-          <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-2xl font-medium capitalize z-30 ">
+          <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-3xl md:text-4xl font-medium capitalize z-30 ">
             {tvGenres &&
               tvGenres.genres.map((item) =>
-                item.name === category ? <p>{item.name}</p> : null
+                item.name === category ? <p>{item.name} TV shows</p> : null
               )}
           </h2>
-
+          <h2 className="text-center absolute left-1/2 bottom-0 -translate-x-1/2 line-clamp md:text-2xl  -translate-y-1/2 text-lg  capitalize z-30">
+            {currentTvCategory &&
+              "Total results: " + currentTvCategory.total_results}
+          </h2>
           {currentTvCategory && (
             <img
               src={
@@ -80,7 +91,6 @@ const CategoriesTv = () => {
 
           <div className="w-full h-full bg-black/30 absolute top-0 left-0 z-20"></div>
         </div>
-
         <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-6">
           {currentTvCategory &&
             currentTvCategory.results.map((item) => (
@@ -96,7 +106,9 @@ const CategoriesTv = () => {
                 <div className="flex   justify-around flex-col h-full">
                   <div>
                     <Link to={`/tv/${item.id}`}>
-                      <h4 className="text-base md:text-lg">{item.name}</h4>
+                      <h4 className="text-base  md:text-xl inline-block">
+                        {item.name}
+                      </h4>
                     </Link>
 
                     <p className="text-sm text-stone-400">
@@ -146,7 +158,26 @@ const CategoriesTv = () => {
               icon={faChevronLeft}
             ></FontAwesomeIcon>
           </button>
-          <p>{page}</p>
+          <form className="flex gap-2">
+            <input
+              type="text"
+              className="w-10 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300"
+              placeholder={page}
+              onChange={(e) => setPageValue(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-emerald-600 px-3 py-1"
+              onClick={() => {
+                if (pageValue) {
+                  handleJumpToPage();
+                }
+              }}
+            >
+              Go
+            </button>
+          </form>
+
           <button
             onClick={() => nextPage()}
             className="py-2 px-3 bg-stone-600 hover:bg-emerald-700 duration-200 rounded-md flex justify-center items-center"
@@ -157,6 +188,11 @@ const CategoriesTv = () => {
             ></FontAwesomeIcon>
           </button>
         </div>
+
+        <p className="flex justify-center items-center">
+          {currentTvCategory &&
+            "Total pages: " + currentTvCategory.total_results}
+        </p>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
+  faArrowRightLong,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Navbar from "./Navbar";
@@ -21,11 +22,13 @@ const Categories = () => {
     } else {
       navigate(`/movie/category/${category}/${parseInt(page) - 1}`);
       window.location.reload();
+      window && window.scroll(0, 0);
     }
   };
   const nextPage = () => {
     navigate(`/movie/category/${category}/${parseInt(page) + 1}`);
     window.location.reload();
+    window && window.scroll(0, 0);
   };
 
   const getGenres = async () => {
@@ -54,24 +57,48 @@ const Categories = () => {
     refetchOnWindowFocus: false,
     enabled: !!currentUrlCategory,
   });
+  const getCurrentCategoryBackdrop = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/movie/categories/${currentUrlCategory}/1`
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  const { data: currentCategoryBackdrop } = useQuery({
+    queryKey: ["currentCategoryBackdrop"],
+    queryFn: getCurrentCategoryBackdrop,
+    refetchOnWindowFocus: false,
+    enabled: !!currentUrlCategory,
+  });
+  const [pageValue, setPageValue] = useState();
+  const handleJumpToPage = () => {
+    navigate(`/movie/category/${category}/${pageValue}`);
+    window.location.reload();
+    window && window.scroll(0, 0);
+  };
 
   return (
     <div className="bg-stone-800">
       <Navbar />
-      <div className="  text-white ">
+      <div className="  text-white pb-4 ">
         <div className="relative py-20 md:py-24 lg:py-28 ">
-          <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-2xl font-medium capitalize z-30 ">
+          <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-3xl md:text-4xl font-medium z-30 ">
             {movieGenres &&
               movieGenres.genres.map((item) =>
-                item.name === category ? <p>{item.name}</p> : null
+                item.name === category ? (
+                  <p className=" first-letter:capitalize">{item.name} movies</p>
+                ) : null
               )}
           </h2>
-
-          {currentCategory && (
+          <h2 className="text-center absolute left-1/2 bottom-0 -translate-x-1/2 line-clamp md:text-xl  -translate-y-1/2 text-lg  first-letter:capitalize z-30">
+            {currentCategory &&
+              "Total results: " + currentCategory.total_results}
+          </h2>
+          {currentCategoryBackdrop && (
             <img
               src={
                 `https://image.tmdb.org/t/p/w1280` +
-                currentCategory.results[0].backdrop_path
+                currentCategoryBackdrop.results[0].backdrop_path
               }
               className="w-full h-full object-cover absolute top-0 left-0 z-10 "
             />
@@ -79,7 +106,6 @@ const Categories = () => {
 
           <div className="w-full h-full bg-black/30 absolute top-0 left-0 z-20"></div>
         </div>
-
         <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-6">
           {currentCategory &&
             currentCategory.results.map((item) => (
@@ -95,7 +121,9 @@ const Categories = () => {
                 <div className="flex   justify-around flex-col h-full">
                   <div>
                     <Link to={`/movie/${item.id}`}>
-                      <h4 className="text-base md:text-lg">{item.title}</h4>
+                      <h4 className="text-base  md:text-xl inline-block">
+                        {item.title}
+                      </h4>
                     </Link>
 
                     <p className="text-sm text-stone-400">
@@ -145,7 +173,26 @@ const Categories = () => {
               icon={faChevronLeft}
             ></FontAwesomeIcon>
           </button>
-          <p>{page}</p>
+          <form className="flex gap-2">
+            <input
+              type="text"
+              className="w-10 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300"
+              placeholder={page}
+              onChange={(e) => setPageValue(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-emerald-600 px-3 py-1"
+              onClick={() => {
+                if (pageValue) {
+                  handleJumpToPage();
+                }
+              }}
+            >
+              Go
+            </button>
+          </form>
+
           <button
             onClick={() => nextPage()}
             className="py-2 px-3 bg-stone-600 hover:bg-emerald-700 duration-200 rounded-md flex justify-center items-center"
@@ -156,6 +203,10 @@ const Categories = () => {
             ></FontAwesomeIcon>
           </button>
         </div>
+        <div className="flex items-center justify-center pb-4"></div>
+        <p className="flex justify-center items-center">
+          {currentCategory && "Total pages: " + currentCategory.total_results}
+        </p>
       </div>
     </div>
   );
