@@ -46,7 +46,9 @@ const Categories = () => {
   });
   const getCurrentCategory = async () => {
     const response = await axios.get(
-      `http://localhost:8080/api/movie/categories/${currentUrlCategory}/${page}`
+      `http://localhost:8080/api/movie/categories/${currentUrlCategory}/${parseInt(
+        page
+      )}`
     );
     console.log(response.data);
     return response.data;
@@ -72,7 +74,7 @@ const Categories = () => {
   });
   const [pageValue, setPageValue] = useState();
   const handleJumpToPage = () => {
-    navigate(`/movie/category/${category}/${pageValue}`);
+    navigate(`/movie/category/${category}/${parseInt(pageValue)}`);
     window.location.reload();
     window && window.scroll(0, 0);
   };
@@ -81,7 +83,7 @@ const Categories = () => {
     <div className="bg-stone-800">
       <Navbar />
       <div className="  text-white pb-4 ">
-        <div className="relative py-20 md:py-24 lg:py-28 ">
+        <div className="relative py-24 md:py-28 lg:py-32 ">
           <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-3xl md:text-4xl font-medium z-30 ">
             {movieGenres &&
               movieGenres.genres.map((item) =>
@@ -176,15 +178,19 @@ const Categories = () => {
           <form className="flex gap-2">
             <input
               type="text"
-              className="w-10 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300"
-              placeholder={page}
+              className="w-16 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300 "
+              placeholder={parseInt(page)}
               onChange={(e) => setPageValue(e.target.value)}
             />
             <button
               type="submit"
+              disabled={
+                currentCategory &&
+                !(parseInt(pageValue) < currentCategory.total_pages)
+              }
               className="bg-emerald-600 px-3 py-1"
               onClick={() => {
-                if (pageValue) {
+                if (parseInt(pageValue) > 0) {
                   handleJumpToPage();
                 }
               }}
@@ -205,7 +211,7 @@ const Categories = () => {
         </div>
         <div className="flex items-center justify-center pb-4"></div>
         <p className="flex justify-center items-center">
-          {currentCategory && "Total pages: " + currentCategory.total_results}
+          {currentCategory && "Total pages: " + currentCategory.total_pages}
         </p>
       </div>
     </div>

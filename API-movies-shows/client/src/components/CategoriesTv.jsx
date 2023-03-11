@@ -46,11 +46,27 @@ const CategoriesTv = () => {
   });
   const getCurrentTvCategory = async () => {
     const response = await axios.get(
-      `http://localhost:8080/api/tv/categories/${currentUrlCategory}/${page}`
+      `http://localhost:8080/api/tv/categories/${currentUrlCategory}/${parseInt(
+        page
+      )}`
     );
     console.log(response.data);
     return response.data;
   };
+
+  const getCurrentCategoryBackdrop = async () => {
+    const response = await axios.get(
+      `http://localhost:8080/api/tv/categories/${currentUrlCategory}/1`
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  const { data: currentCategoryBackdrop } = useQuery({
+    queryKey: ["currentCategoryBackdrop"],
+    queryFn: getCurrentCategoryBackdrop,
+    refetchOnWindowFocus: false,
+    enabled: !!currentUrlCategory,
+  });
 
   const { data: currentTvCategory } = useQuery({
     queryKey: ["currentTvCategory"],
@@ -60,7 +76,7 @@ const CategoriesTv = () => {
   });
   const [pageValue, setPageValue] = useState();
   const handleJumpToPage = () => {
-    navigate(`/movie/category/${category}/${pageValue}`);
+    navigate(`/tv/category/${category}/${parseInt(pageValue)}`);
     window.location.reload();
     window && window.scroll(0, 0);
   };
@@ -68,7 +84,7 @@ const CategoriesTv = () => {
     <div className="bg-stone-800">
       <Navbar />
       <div className="  text-white pb-4 ">
-        <div className="relative py-20 md:py-24 lg:py-28 ">
+        <div className="relative py-24 md:py-40 lg:py-48 ">
           <h2 className="text-center absolute left-1/2 top-1/2 -translate-x-1/2 line-clamp  -translate-y-1/2 text-3xl md:text-4xl font-medium capitalize z-30 ">
             {tvGenres &&
               tvGenres.genres.map((item) =>
@@ -79,11 +95,11 @@ const CategoriesTv = () => {
             {currentTvCategory &&
               "Total results: " + currentTvCategory.total_results}
           </h2>
-          {currentTvCategory && (
+          {currentCategoryBackdrop && (
             <img
               src={
                 `https://image.tmdb.org/t/p/w1280` +
-                currentTvCategory.results[0].backdrop_path
+                currentCategoryBackdrop.results[0].backdrop_path
               }
               className="w-full h-full object-cover absolute top-0 left-0 z-10 "
             />
@@ -161,15 +177,19 @@ const CategoriesTv = () => {
           <form className="flex gap-2">
             <input
               type="text"
-              className="w-10 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300"
+              className="w-10 bg-stone-500 py-[3px] outline-none outline-offset-0 focus:outline-emerald-400 duration-150 text-center placeholder:text-stone-300 "
               placeholder={page}
               onChange={(e) => setPageValue(e.target.value)}
             />
             <button
               type="submit"
+              disabled={
+                currentTvCategory &&
+                !(parseInt(pageValue) < currentTvCategory.total_pages)
+              }
               className="bg-emerald-600 px-3 py-1"
               onClick={() => {
-                if (pageValue) {
+                if (parseInt(pageValue) > 0) {
                   handleJumpToPage();
                 }
               }}
@@ -190,8 +210,7 @@ const CategoriesTv = () => {
         </div>
 
         <p className="flex justify-center items-center">
-          {currentTvCategory &&
-            "Total pages: " + currentTvCategory.total_results}
+          {currentTvCategory && "Total pages: " + currentTvCategory.total_pages}
         </p>
       </div>
     </div>
