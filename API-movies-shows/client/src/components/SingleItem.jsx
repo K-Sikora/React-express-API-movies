@@ -76,7 +76,11 @@ const SingleItem = () => {
               setEpisodesVisible={setEpisodesVisible}
               itemData={itemData}
             />
-            <ItemCoverImage itemData={itemData} />
+            <ItemCoverImage
+              id={id}
+              itemData={itemData}
+              itemType={itemType}
+            />
             <ItemDetails
               itemData={itemData}
               keyword={keyword}
